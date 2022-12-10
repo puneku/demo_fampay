@@ -1,0 +1,5 @@
+/venv/
+/env/
+/demo_fampay/
+db.sqlite3
+__pycache__/
