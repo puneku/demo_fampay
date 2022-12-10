@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 def home(request):    
     return HttpResponse("<div style='text-align:center'><h1>Hello, Fampay!</h1></div>")
@@ -17,9 +18,10 @@ def home(request):
 class Videos(APIView):
 
     def get(self, request):
+        pattern = request.GET.get('pattern')
         page = request.GET.get('page', 1)
         per_page_count = request.GET.get('per_page_count', 5)
-        videos_list = YoutubeVideos.objects.all().order_by('-published_date')
+        videos_list = YoutubeVideos.objects.filter(Q(video_title__contains=pattern) | Q(video_description__contains=pattern)).order_by('-published_date')
         paginator = Paginator(videos_list, per_page_count)
         curr_page_data = paginator.get_page(page) 
         serializer = YoutubeVideosSerializer(curr_page_data, many=True)
