@@ -10,7 +10,8 @@ from django.db.models import Q
 from .tasks import auto_add_videos
 
 def home(request):
-    auto_add_videos.delay()
+    '''V1 approach to call Youtube APIs using asyncio'''
+    # auto_add_videos.delay()
     return HttpResponse("<div style='text-align:center'><h1>Hello, Fampay!</h1></div>")
 
 
@@ -24,7 +25,7 @@ class Videos(APIView):
         paginator = Paginator(videos_list, per_page_count)
         curr_page_data = paginator.get_page(page) 
         serializer = YoutubeVideosSerializer(curr_page_data, many=True)
-        # Case: when we want to store videos corresponding to user's search query
+        # Case: when we want to store videos corresponding to user's search query (V1 approch)
         # auto_add_videos.delay()
         return Response(serializer.data)
 

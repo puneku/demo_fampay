@@ -1,6 +1,7 @@
-/venv/
-/env/
-/demo_fampay/
-db.sqlite3
-__pycache__/
-fampay/settings.py
+# /venv/
+# /env/
+# /demo_fampay/
+# db.sqlite3
+# __pycache__/
+# fampay/settings.py
+# *.pyc
