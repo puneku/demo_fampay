@@ -6,3 +6,7 @@ class YoutubeVideos(models.Model):
     published_date = models.DateTimeField() 
     thumbnail_url = models.URLField()
     video_url = models.URLField()
+
+    class Meta:
+        # TODO
+        indexes = []
