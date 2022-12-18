@@ -7,13 +7,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core.paginator import Paginator
 from django.db.models import Q
+from .tasks import auto_add_videos
 
-def home(request):    
+def home(request):
+    auto_add_videos.delay()
     return HttpResponse("<div style='text-align:center'><h1>Hello, Fampay!</h1></div>")
 
-# def videos(request):
-#     if request.method == "GET":
-#         pass
 
 class Videos(APIView):
 
@@ -25,10 +24,18 @@ class Videos(APIView):
         paginator = Paginator(videos_list, per_page_count)
         curr_page_data = paginator.get_page(page) 
         serializer = YoutubeVideosSerializer(curr_page_data, many=True)
+        # Case: when we want to store videos corresponding to user's search query
+        # auto_add_videos.delay()
         return Response(serializer.data)
 
     def post(self, request):
         data = request.data
+        if data and isinstance(data, list):
+            for dt in data:
+                serializer = YoutubeVideosSerializer(data=dt)
+                if serializer.is_valid():
+                    serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         serializer = YoutubeVideosSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
